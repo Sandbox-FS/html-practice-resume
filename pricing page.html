@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Pricing Plans - Responsive & Interactive</title>
+    <style>
+        /* BASE STYLES - Inherited from Copilot's suggestion */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f9; /* Lighter, modern background */
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #3f51b5; /* Professional blue header */
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .pricing-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Allows cards to wrap on smaller screens */
+            gap: 25px; /* Increased gap for better spacing */
+            padding: 50px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .pricing-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1); /* Stronger shadow */
+            padding: 30px;
+            text-align: center;
+            width: 100%; /* Default to full width on mobile */
+            max-width: 320px; /* Max width on desktop */
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+        }
+
+        /* HIGHLIGHTED CARD - Developer Refinement */
+        .pricing-card.highlight {
+            border: 3px solid #FF9800; /* Orange border */
+            transform: scale(1.05); /* Slightly bigger */
+            z-index: 10;
+        }
+        .pricing-card.highlight .subscribe-button {
+            background-color: #FF9800; /* Matching orange button */
+        }
+        .pricing-card.highlight .subscribe-button:hover {
+            background-color: #fb8c00;
+        }
+
+        .pricing-card h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        .price {
+            font-size: 2.5em; /* Bigger price */
+            color: #4CAF50;
+            margin: 10px 0 20px 0;
+            font-weight: 700;
+        }
+        .features {
+            list-style-type: none;
+            padding: 0;
+            flex-grow: 1; /* Makes the list take up available space */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .features li {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #555;
+        }
+        .features li::before {
+            content: '✔'; /* Checkmark icon */
+            color: #4CAF50;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        /* The .subscribe-button styling applies to the new <button> elements */
+        .subscribe-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 500;
+            margin-top: auto; /* Pushes button to the bottom */
+            display: block; /* Makes the button take full width of the card */
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .subscribe-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Custom message box styling (instead of using alert()) */
+        #status-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            transform: translateX(100%);
+            z-index: 1000;
+        }
+        #status-message.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* RESPONSIVENESS - Demonstrating Flexbox Mastery */
+        @media (max-width: 1024px) {
+            /* On Tablets, cards take up 45% of space to leave some margin */
+            .pricing-card {
+                max-width: 45%;
+            }
+        }
+        @media (max-width: 650px) {
+            /* On Phones, cards stack vertically, taking full width */
+            .pricing-card {
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+            .pricing-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Choose the Right Plan for You</h1>
+        <p>Simple pricing with no hidden fees.</p>
+    </header>
+    
+    <div class="pricing-container">
+        
+        <!-- BASIC CARD -->
+        <div class="pricing-card">
+            <h2>Basic</h2>
+            <p class="price">$9<small>/mo</small></p>
+            <ul class="features">
+                <li>1 User Account</li>
+                <li>5GB Storage</li>
+                <li>Community Support</li>
+                <li>Basic Analytics</li>
+            </ul>
+            <!-- Changed <a> to <button> and added onclick handler -->
+            <button class="subscribe-button" onclick="handleSubscription('Basic')">Get Started</button>
+        </div>
+        
+        <!-- PRO CARD - HIGHLIGHTED -->
+        <div class="pricing-card highlight">
+            <h2>Pro <span style="background: #FF9800; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7em; vertical-align: top;">RECOMMENDED</span></h2>
+            <p class="price">$29<small>/mo</small></p>
+            <ul class="features">
+                <li>**5 User Accounts**</li>
+                <li>**50GB Storage**</li>
+                <li>Priority Email Support</li>
+                <li>Advanced Analytics</li>
+                <li>Custom Branding</li>
+            </ul>
+            <!-- Changed <a> to <button> and added onclick handler -->
+            <button class="subscribe-button" onclick="handleSubscription('Pro')">Start 14-Day Free Trial</button>
+        </div>
+        
+        <!-- ENTERPRISE CARD -->
+        <div class="pricing-card">
+            <h2>Enterprise</h2>
+            <p class="price">$89<small>/mo</small></p>
+            <ul class="features">
+                <li>Unlimited Users</li>
+                <li>Unlimited Storage</li>
+                <li>24/7 Phone Support</li>
+                <li>Real-Time Reporting</li>
+                <li>Dedicated Account Manager</li>
+            </ul>
+            <!-- Changed <a> to <button> and added onclick handler -->
+            <button class="subscribe-button" onclick="handleSubscription('Enterprise')">Contact Sales</button>
+        </div>
+        
+    </div>
+
+    <!-- Custom status message box for interaction feedback -->
+    <div id="status-message"></div>
+
+    <script>
+        // FUNCTION 1: This is the function called when a button is clicked
+        function handleSubscription(plan) {
+            // In a real application, you would redirect the user here:
+            // window.location.href = `/checkout.html?plan=${plan}`;
+
+            // Instead of redirecting, we show a success message to confirm the action
+            showStatusMessage(`Selected the ${plan} plan! Redirecting to checkout...`);
+        }
+
+        // FUNCTION 2: Displays a temporary message box instead of using alert()
+        function showStatusMessage(message) {
+            const statusBox = document.getElementById('status-message');
+            // 1. Set the message content
+            statusBox.textContent = message;
+            
+            // 2. Add the 'show' class to slide the box in
+            statusBox.classList.add('show');
+
+            // 3. Set a timer to automatically hide the box after 3 seconds
+            setTimeout(() => {
+                statusBox.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
