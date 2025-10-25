@@ -414,12 +414,7 @@ GitHub Pages supports static sites. Here's how to deploy sites built with modern
 
 Astro has excellent GitHub Pages support built-in!
 
-1. **Install Astro's GitHub Pages adapter:**
-   ```bash
-   npm install @astrojs/starlight
-   ```
-
-2. **Configure `astro.config.mjs`:**
+1. **Configure `astro.config.mjs`:**
    ```javascript
    import { defineConfig } from 'astro/config';
 
@@ -429,7 +424,7 @@ Astro has excellent GitHub Pages support built-in!
    });
    ```
 
-3. **Use the official GitHub Action:**
+2. **Use the official GitHub Action:**
    Create `.github/workflows/deploy.yml`:
    ```yaml
    name: Deploy Astro to GitHub Pages
