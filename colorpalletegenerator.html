@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Color Palette Generator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font family -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f9;
+        }
+        
+        .scheme-btn {
+            @apply p-3 rounded-lg border-2 border-gray-200 bg-white hover:border-blue-300 hover:shadow-md transition-all duration-200 cursor-pointer;
+        }
+        
+        .scheme-btn.active {
+            @apply border-blue-500 bg-blue-50 shadow-md;
+        }
+        
+        .scheme-btn:hover {
+            @apply transform scale-105;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 sm:p-8">
+
+    <div class="max-w-4xl w-full bg-white shadow-xl rounded-2xl p-6 sm:p-10">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">
+                Color Palette & Contrast Checker
+            </h1>
+            <p class="text-gray-500">
+                Generate accessible color schemes instantly for your next project.
+            </p>
+        </header>
+
+        <!-- Input Section -->
+        <div class="mb-8 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <input type="color" id="colorInput" value="#1D4ED8" class="h-16 w-16 p-1 border-4 border-gray-200 rounded-lg cursor-pointer">
+            <input type="text" id="hexInput" value="#1D4ED8" maxlength="7" placeholder="#RRGGBB"
+                   class="flex-grow max-w-sm px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-lg font-mono uppercase text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row gap-2">
+            <button id="generateButton"
+                    class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-150">
+                Generate Palette
+            </button>
+                <button id="randomButton"
+                        class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-600 hover:to-pink-600 transition duration-150 transform hover:scale-105">
+                    🎲 Random Color
+                </button>
+            </div>
+        </div>
+
+        <!-- Palette Scheme Selector -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 text-center">Choose Color Scheme</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+                <button class="scheme-btn active" data-scheme="complementary">
+                    <div class="w-full h-8 rounded mb-2" style="background: linear-gradient(90deg, #1D4ED8, #D84E1D)"></div>
+                    <span class="text-xs font-medium">Complementary</span>
+                </button>
+                <button class="scheme-btn" data-scheme="triadic">
+                    <div class="w-full h-8 rounded mb-2" style="background: linear-gradient(90deg, #1D4ED8, #D84E1D, #4ED81D)"></div>
+                    <span class="text-xs font-medium">Triadic</span>
+                </button>
+                <button class="scheme-btn" data-scheme="warm">
+                    <div class="w-full h-8 rounded mb-2" style="background: linear-gradient(90deg, #FF6B6B, #FF8E53, #FF6B35)"></div>
+                    <span class="text-xs font-medium">Warm</span>
+                </button>
+                <button class="scheme-btn" data-scheme="cool">
+                    <div class="w-full h-8 rounded mb-2" style="background: linear-gradient(90deg, #4ECDC4, #45B7D1, #96CEB4)"></div>
+                    <span class="text-xs font-medium">Cool</span>
+                </button>
+                <button class="scheme-btn" data-scheme="pastel">
+                    <div class="w-full h-8 rounded mb-2" style="background: linear-gradient(90deg, #FFB3BA, #FFDFBA, #FFFFBA)"></div>
+                    <span class="text-xs font-medium">Pastel</span>
+                </button>
+                <button class="scheme-btn" data-scheme="monochromatic">
+                    <div class="w-full h-8 rounded mb-2" style="background: linear-gradient(90deg, #1D4ED8, #3B82F6, #60A5FA)"></div>
+                    <span class="text-xs font-medium">Monochromatic</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Output Section (Palette Display) -->
+        <div id="paletteContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Color swatches will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Accessibility & Mood Analysis -->
+        <div id="analysisContainer" class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">🎨 Palette Analysis</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div id="moodAnalysis" class="bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="font-semibold text-gray-700 mb-2">Mood & Feel</h4>
+                    <div id="moodIndicators" class="flex flex-wrap gap-2">
+                        <!-- Mood indicators will be inserted here -->
+                    </div>
+                </div>
+                <div id="accessibilityAnalysis" class="bg-white p-4 rounded-lg shadow-sm">
+                    <h4 class="font-semibold text-gray-700 mb-2">Accessibility Check</h4>
+                    <div id="contrastRatios" class="space-y-2">
+                        <!-- Contrast ratios will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const colorInput = document.getElementById('colorInput');
+        const hexInput = document.getElementById('hexInput');
+        const generateButton = document.getElementById('generateButton');
+        const randomButton = document.getElementById('randomButton');
+        const paletteContainer = document.getElementById('paletteContainer');
+        
+        // Current selected scheme
+        let currentScheme = 'complementary';
+        
+        // Color names database
+        const colorNames = {
+            '#FF0000': 'Red', '#00FF00': 'Green', '#0000FF': 'Blue', '#FFFF00': 'Yellow',
+            '#FF00FF': 'Magenta', '#00FFFF': 'Cyan', '#FFA500': 'Orange', '#800080': 'Purple',
+            '#FFC0CB': 'Pink', '#A52A2A': 'Brown', '#808080': 'Gray', '#000000': 'Black',
+            '#FFFFFF': 'White', '#FFD700': 'Gold', '#C0C0C0': 'Silver', '#1D4ED8': 'Blue',
+            '#DC2626': 'Red', '#059669': 'Green', '#7C3AED': 'Purple', '#EA580C': 'Orange',
+            '#0891B2': 'Cyan', '#BE185D': 'Pink', '#65A30D': 'Lime', '#CA8A04': 'Amber'
+        };
+
+        // --- Utility Functions ---
+
+        // 1. Converts Hex to RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // 2. Converts RGB to HSL (for generating related colors)
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0; // achromatic
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return [h * 360, s * 100, l * 100];
+        }
+
+        // 3. Converts HSL back to RGB
+        function hslToRgb(h, s, l) {
+            h /= 360; s /= 100; l /= 100;
+            let r, g, b;
+
+            if (s === 0) {
+                r = g = b = l; // achromatic
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+
+        // 4. Converts RGB to Hex
+        function rgbToHex(r, g, b) {
+            const toHex = (c) => {
+                const hex = c.toString(16);
+                return hex.length === 1 ? "0" + hex : hex;
+            };
+            return "#" + toHex(r) + toHex(g) + toHex(b);
+        }
+
+        // 5. Determines optimal text color (Black or White) based on luminance
+        function getContrastColor(hex) {
+            const rgb = hexToRgb(hex);
+            if (!rgb) return '#000000'; // Default black if parsing fails
+
+            // Calculate luminance using the standard formula (Rec. 709)
+            // L = 0.2126 * R + 0.7152 * G + 0.0722 * B
+            const luminance = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+
+            // Use a threshold (0.5 is common) to decide if dark or light text is better
+            return luminance > 0.5 ? '#000000' : '#FFFFFF';
+        }
+
+        // 6. Generates a random hex color
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // 7. Get color name from hex
+        function getColorName(hex) {
+            return colorNames[hex.toUpperCase()] || 'Custom Color';
+        }
+
+        // 8. Copy to clipboard function
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return true;
+            }
+        }
+
+        // 9. Show copy notification
+        function showCopyNotification(element) {
+            const originalText = element.textContent;
+            element.textContent = '✓ Copied!';
+            element.style.color = '#10B981';
+            setTimeout(() => {
+                element.textContent = originalText;
+                element.style.color = '';
+            }, 1500);
+        }
+
+        // 10. Generates a color swatch HTML block with enhanced features
+        function createSwatch(title, hexColor, isPrimary = false) {
+            const contrastColor = getContrastColor(hexColor);
+            const titleClass = isPrimary ? 'text-xl font-bold' : 'text-lg font-semibold';
+            const colorName = getColorName(hexColor);
+
+            return `
+                <div class="p-4 sm:p-6 rounded-xl shadow-lg transition duration-200 hover:shadow-xl group relative"
+                     style="background-color: ${hexColor}; color: ${contrastColor};">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="${titleClass}">${title}</h3>
+                        <button class="copy-btn opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-white bg-opacity-20 hover:bg-opacity-30 px-2 py-1 rounded text-xs font-medium"
+                                onclick="copyColor('${hexColor}')">
+                            📋 Copy
+                        </button>
+                    </div>
+                    <p class="text-3xl font-mono mb-1">${hexColor}</p>
+                    <p class="text-sm opacity-80 mb-2">${colorName}</p>
+                    <p class="text-sm opacity-80">Text contrast: ${contrastColor === '#FFFFFF' ? 'White' : 'Black'}</p>
+                </div>
+            `;
+        }
+
+        // 7. Generate colors based on different schemes
+        function generateSchemeColors(hex, scheme) {
+            const rgb = hexToRgb(hex);
+            const [h, s, l] = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const colors = [];
+
+            switch (scheme) {
+                case 'complementary':
+                    // Original complementary logic
+                    const complementaryH = (h + 180) % 360;
+                    const complementaryRgb = hslToRgb(complementaryH, s, l);
+                    const complementaryHex = rgbToHex(complementaryRgb[0], complementaryRgb[1], complementaryRgb[2]);
+                    colors.push(
+                        { name: 'Primary Color', hex: hex, isPrimary: true },
+                        { name: 'Complementary', hex: complementaryHex }
+                    );
+                    break;
+
+                case 'triadic':
+                    const triadic1H = (h + 120) % 360;
+                    const triadic2H = (h + 240) % 360;
+                    const triadic1Rgb = hslToRgb(triadic1H, s, l);
+                    const triadic2Rgb = hslToRgb(triadic2H, s, l);
+                    colors.push(
+                        { name: 'Primary Color', hex: hex, isPrimary: true },
+                        { name: 'Triadic 1', hex: rgbToHex(triadic1Rgb[0], triadic1Rgb[1], triadic1Rgb[2]) },
+                        { name: 'Triadic 2', hex: rgbToHex(triadic2Rgb[0], triadic2Rgb[1], triadic2Rgb[2]) }
+                    );
+                    break;
+
+                case 'warm':
+                    // Warm colors: reds, oranges, yellows
+                    const warmHues = [0, 15, 30, 45, 60]; // Red to yellow range
+                    colors.push({ name: 'Primary Color', hex: hex, isPrimary: true });
+                    warmHues.forEach((hue, index) => {
+                        const warmRgb = hslToRgb(hue, Math.min(s + 20, 100), Math.max(l - 10, 20));
+                        colors.push({
+                            name: `Warm ${index + 1}`,
+                            hex: rgbToHex(warmRgb[0], warmRgb[1], warmRgb[2])
+                        });
+                    });
+                    break;
+
+                case 'cool':
+                    // Cool colors: blues, greens, purples
+                    const coolHues = [180, 200, 220, 240, 260]; // Cyan to purple range
+                    colors.push({ name: 'Primary Color', hex: hex, isPrimary: true });
+                    coolHues.forEach((hue, index) => {
+                        const coolRgb = hslToRgb(hue, Math.min(s + 15, 100), Math.max(l - 5, 25));
+                        colors.push({
+                            name: `Cool ${index + 1}`,
+                            hex: rgbToHex(coolRgb[0], coolRgb[1], coolRgb[2])
+                        });
+                    });
+                    break;
+
+                case 'pastel':
+                    // Pastel colors: high lightness, lower saturation
+                    const pastelHues = [h, (h + 30) % 360, (h + 60) % 360, (h + 120) % 360, (h + 180) % 360];
+                    colors.push({ name: 'Primary Color', hex: hex, isPrimary: true });
+                    pastelHues.forEach((hue, index) => {
+                        const pastelRgb = hslToRgb(hue, Math.max(s - 30, 20), Math.min(l + 30, 85));
+                        colors.push({
+                            name: `Pastel ${index + 1}`,
+                            hex: rgbToHex(pastelRgb[0], pastelRgb[1], pastelRgb[2])
+                        });
+                    });
+                    break;
+
+                case 'monochromatic':
+                    // Different shades and tints of the same hue
+                    const monoVariations = [
+                        { name: 'Dark', lightness: Math.max(l - 30, 10) },
+                        { name: 'Medium Dark', lightness: Math.max(l - 15, 20) },
+                        { name: 'Base', lightness: l },
+                        { name: 'Light', lightness: Math.min(l + 15, 80) },
+                        { name: 'Very Light', lightness: Math.min(l + 30, 90) }
+                    ];
+                    monoVariations.forEach((variation, index) => {
+                        const monoRgb = hslToRgb(h, s, variation.lightness);
+                        colors.push({
+                            name: variation.name,
+                            hex: rgbToHex(monoRgb[0], monoRgb[1], monoRgb[2]),
+                            isPrimary: index === 2 // Mark the base color as primary
+                        });
+                    });
+                    break;
+            }
+
+            return colors;
+        }
+
+        // 11. Calculate WCAG contrast ratio
+        function getContrastRatio(color1, color2) {
+            const getLuminance = (hex) => {
+                const rgb = hexToRgb(hex);
+                const [r, g, b] = [rgb.r, rgb.g, rgb.b].map(c => {
+                    c = c / 255;
+                    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+                });
+                return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            };
+
+            const lum1 = getLuminance(color1);
+            const lum2 = getLuminance(color2);
+            const brightest = Math.max(lum1, lum2);
+            const darkest = Math.min(lum1, lum2);
+            return (brightest + 0.05) / (darkest + 0.05);
+        }
+
+        // 12. Analyze mood based on colors
+        function analyzeMood(colors) {
+            const moods = [];
+            const primaryColor = colors[0].hex;
+            const rgb = hexToRgb(primaryColor);
+            const [h, s, l] = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+            // Analyze hue
+            if (h >= 0 && h < 30) moods.push({ name: '🔥 Energetic', color: '#EF4444' });
+            if (h >= 30 && h < 60) moods.push({ name: '☀️ Warm', color: '#F59E0B' });
+            if (h >= 60 && h < 120) moods.push({ name: '🌱 Fresh', color: '#10B981' });
+            if (h >= 120 && h < 180) moods.push({ name: '🌊 Calm', color: '#06B6D4' });
+            if (h >= 180 && h < 240) moods.push({ name: '💙 Professional', color: '#3B82F6' });
+            if (h >= 240 && h < 300) moods.push({ name: '💜 Creative', color: '#8B5CF6' });
+            if (h >= 300 && h < 360) moods.push({ name: '💖 Playful', color: '#EC4899' });
+
+            // Analyze saturation
+            if (s > 70) moods.push({ name: '🎨 Vibrant', color: '#F59E0B' });
+            if (s < 30) moods.push({ name: '🤍 Subtle', color: '#6B7280' });
+
+            // Analyze lightness
+            if (l > 80) moods.push({ name: '✨ Light', color: '#F3F4F6' });
+            if (l < 30) moods.push({ name: '🌙 Dark', color: '#1F2937' });
+
+            return moods.slice(0, 4); // Limit to 4 moods
+        }
+
+        // 13. Generate analysis display
+        function generateAnalysis(colors) {
+            const moodAnalysis = document.getElementById('moodIndicators');
+            const contrastAnalysis = document.getElementById('contrastRatios');
+            
+            // Mood analysis
+            const moods = analyzeMood(colors);
+            moodAnalysis.innerHTML = moods.map(mood => 
+                `<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" style="background-color: ${mood.color}20; color: ${mood.color};">
+                    ${mood.name}
+                </span>`
+            ).join('');
+
+            // Accessibility analysis
+            const primaryColor = colors[0].hex;
+            const contrastColor = getContrastColor(primaryColor);
+            const ratio = getContrastRatio(primaryColor, contrastColor);
+            
+            let accessibilityStatus = '';
+            let statusColor = '';
+            if (ratio >= 7) {
+                accessibilityStatus = 'AAA (Excellent)';
+                statusColor = '#10B981';
+            } else if (ratio >= 4.5) {
+                accessibilityStatus = 'AA (Good)';
+                statusColor = '#F59E0B';
+            } else {
+                accessibilityStatus = 'Poor (Needs improvement)';
+                statusColor = '#EF4444';
+            }
+
+            contrastAnalysis.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-medium">Contrast Ratio:</span>
+                    <span class="text-sm font-mono">${ratio.toFixed(1)}:1</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-medium">Accessibility:</span>
+                    <span class="text-sm font-medium" style="color: ${statusColor}">${accessibilityStatus}</span>
+                </div>
+                <div class="mt-2 p-2 rounded" style="background-color: ${primaryColor}; color: ${contrastColor};">
+                    <span class="text-sm font-medium">Sample Text</span>
+                </div>
+            `;
+        }
+
+
+        // --- Main Logic ---
+
+        function generatePalette(hex) {
+            console.log('generatePalette called with hex:', hex, 'scheme:', currentScheme);
+            // Validate and clean up the hex code
+            let cleanedHex = hex.trim().toUpperCase();
+            
+            // Remove any non-hex characters except #
+            cleanedHex = cleanedHex.replace(/[^0-9A-F#]/g, '');
+            
+            // Ensure it starts with #
+            if (!cleanedHex.startsWith('#')) {
+                cleanedHex = '#' + cleanedHex;
+            }
+            
+            // Validate the format - should be # followed by exactly 6 hex characters
+            if (!/^#[0-9A-F]{6}$/.test(cleanedHex)) {
+                console.log('Invalid hex format:', cleanedHex);
+                paletteContainer.innerHTML = '<p class="text-red-600 text-center col-span-full">Invalid HEX code. Please use a format like #1D4ED8.</p>';
+                return;
+            }
+            
+            console.log('Valid hex, proceeding with palette generation:', cleanedHex);
+            hexInput.value = cleanedHex; // Update input field to cleaned value
+            colorInput.value = cleanedHex; // Update color picker
+
+            // Generate colors based on selected scheme
+            const colors = generateSchemeColors(cleanedHex, currentScheme);
+            
+            // Create swatches for all colors
+            let swatchesHTML = '';
+            colors.forEach(color => {
+                swatchesHTML += createSwatch(color.name, color.hex, color.isPrimary);
+            });
+
+            // Display all swatches
+            paletteContainer.innerHTML = swatchesHTML;
+            
+            // Generate analysis
+            generateAnalysis(colors);
+        }
+
+        // --- Event Listeners ---
+
+        // Run generation on button click
+        generateButton.addEventListener('click', () => {
+            generatePalette(hexInput.value);
+        });
+
+        // Run generation on color picker change
+        colorInput.addEventListener('input', (e) => {
+            hexInput.value = e.target.value;
+            generatePalette(e.target.value);
+        });
+
+        // Run generation when user types in hex input and presses Enter
+        hexInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                generatePalette(e.target.value);
+            }
+        });
+
+        // Global copy function for color swatches
+        window.copyColor = async function(hexColor) {
+            const success = await copyToClipboard(hexColor);
+            if (success) {
+                // Find the button that was clicked and show notification
+                const buttons = document.querySelectorAll('.copy-btn');
+                buttons.forEach(btn => {
+                    if (btn.onclick.toString().includes(hexColor)) {
+                        showCopyNotification(btn);
+                    }
+                });
+            }
+        };
+
+        // Random button event listener
+        randomButton.addEventListener('click', () => {
+            // Add spinning animation
+            randomButton.style.transform = 'rotate(360deg)';
+            randomButton.style.transition = 'transform 0.5s ease-in-out';
+            
+            setTimeout(() => {
+                const randomColor = generateRandomColor();
+                hexInput.value = randomColor;
+                colorInput.value = randomColor;
+                generatePalette(randomColor);
+                
+                // Reset button animation
+                randomButton.style.transform = '';
+                randomButton.style.transition = '';
+            }, 500);
+        });
+
+        // Scheme button event listeners
+        document.querySelectorAll('.scheme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                document.querySelectorAll('.scheme-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                // Update current scheme
+                currentScheme = btn.dataset.scheme;
+                // Regenerate palette with new scheme
+                generatePalette(hexInput.value);
+            });
+        });
+
+        // Initialize with the default color
+        window.onload = () => {
+            generatePalette(colorInput.value);
+        };
+
+    </script>
+</body>
+</html>
