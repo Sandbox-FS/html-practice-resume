@@ -6,14 +6,15 @@ A practical, step-by-step guide to publishing your website using GitHub Pages �
 
 ## Table of Contents
 1. [What is GitHub Pages?](#what-is-github-pages)
-2. [Quick Start: Zero to Published Site](#quick-start-zero-to-published-site)
-3. [Repository Setup and Structure](#repository-setup-and-structure)
-4. [Enabling GitHub Pages](#enabling-github-pages)
-5. [Automatic Builds from Main Branch](#automatic-builds-from-main-branch)
-6. [Custom Domain Configuration](#custom-domain-configuration)
-7. [Using Frameworks (Next.js, Astro, etc.)](#using-frameworks-nextjs-astro-etc)
-8. [Version Control & Team Collaboration](#version-control--team-collaboration)
-9. [Troubleshooting Common Issues](#troubleshooting-common-issues)
+2. [Types of GitHub Pages: User/Organization vs Project Pages](#types-of-github-pages-userorganization-vs-project-pages)
+3. [Quick Start: Zero to Published Site](#quick-start-zero-to-published-site)
+4. [Repository Setup and Structure](#repository-setup-and-structure)
+5. [Enabling GitHub Pages](#enabling-github-pages)
+6. [Automatic Builds from Main Branch](#automatic-builds-from-main-branch)
+7. [Custom Domain Configuration](#custom-domain-configuration)
+8. [Using Frameworks (Next.js, Astro, etc.)](#using-frameworks-nextjs-astro-etc)
+9. [Version Control & Team Collaboration](#version-control--team-collaboration)
+10. [Troubleshooting Common Issues](#troubleshooting-common-issues)
 
 ---
 
@@ -31,6 +32,108 @@ GitHub Pages is a free static site hosting service that takes HTML, CSS, and Jav
 - ✅ Automatic deployment from your repo
 - ✅ Custom domain support
 - ✅ Version controlled deployment
+
+---
+
+## Types of GitHub Pages: User/Organization vs Project Pages
+
+GitHub Pages comes in two flavors, each with different URL structures and use cases.
+
+### User/Organization Pages (Internal)
+
+These are your **primary** GitHub Pages sites, tied directly to your username or organization.
+
+**Characteristics:**
+- **Repository name must be:** `<username>.github.io` or `<orgname>.github.io`
+- **Published at:** `https://<username>.github.io` (no repo name in URL)
+- **One per account/organization**
+- **Deployed from:** `main` branch (root or `/docs` folder)
+- **Best for:** Personal portfolios, company homepages, main organization sites
+
+**Example:**
+```
+Repository: octocat.github.io
+Published at: https://octocat.github.io
+```
+
+**When to use:**
+- ✅ Your main personal website
+- ✅ Company/organization homepage
+- ✅ When you want a clean URL without a repo name
+- ✅ Central landing page for all your projects
+
+### Project Pages (External)
+
+These are **individual project sites**, perfect for documentation or demos of specific repositories.
+
+**Characteristics:**
+- **Repository name:** Any name (e.g., `my-project`, `docs`, `portfolio-v2`)
+- **Published at:** `https://<username>.github.io/<repository-name>/`
+- **Unlimited per account**
+- **Deployed from:** `main` branch, `gh-pages` branch, or `/docs` folder
+- **Best for:** Project documentation, demos, multiple sites per account
+
+**Example:**
+```
+Repository: octocat/hello-world
+Published at: https://octocat.github.io/hello-world/
+```
+
+**When to use:**
+- ✅ Project documentation (README isn't enough)
+- ✅ Demo sites for specific projects
+- ✅ Multiple websites under one account
+- ✅ Team project showcases
+
+### Key Differences at a Glance
+
+| Feature | User/Org Pages | Project Pages |
+|---------|----------------|---------------|
+| **URL** | `username.github.io` | `username.github.io/repo-name` |
+| **Repo Name** | Must be `username.github.io` | Any name |
+| **Quantity** | One per account | Unlimited |
+| **Base Path** | `/` (root) | `/repo-name/` |
+| **Typical Use** | Main website | Project docs/demos |
+
+### Important: Base Path Implications
+
+**Project Pages** require careful handling of paths because they live in a subdirectory:
+
+```html
+<!-- ❌ Won't work on Project Pages (looking for username.github.io/style.css) -->
+<link rel="stylesheet" href="/style.css">
+<img src="/images/logo.png" alt="Logo">
+
+<!-- ✅ Works everywhere (relative paths) -->
+<link rel="stylesheet" href="style.css">
+<img src="images/logo.png" alt="Logo">
+
+<!-- ✅ Also works (relative from root) -->
+<link rel="stylesheet" href="./style.css">
+<img src="./images/logo.png" alt="Logo">
+```
+
+**For frameworks** (Next.js, Astro, etc.), you'll need to configure a `basePath`:
+```javascript
+// next.config.js (only for Project Pages)
+module.exports = {
+  basePath: '/your-repo-name',
+}
+```
+
+### Which One Should You Choose?
+
+**Start with a Project Page if:**
+- You're building documentation for a specific project
+- You want to experiment without affecting your main site
+- You need multiple websites under one account
+
+**Use a User/Organization Page if:**
+- This is your primary web presence
+- You want the cleanest possible URL
+- You're building a company/organization homepage
+
+**Pro Tip:** You can have BOTH! Use `username.github.io` for your main site and create Project Pages for individual projects. They all work together seamlessly.
 
 ---
 
@@ -293,7 +396,112 @@ Buy a domain from:
 
 ### Step 2: Configure DNS
 
-In your domain registrar's DNS settings, add these records:
+The DNS configuration varies slightly by registrar. Below are detailed instructions for the most common providers.
+
+#### Option A: Namecheap (Recommended)
+
+If your domain is registered with Namecheap, follow these steps:
+
+1. **Log in to Namecheap**
+   - Go to [namecheap.com](https://www.namecheap.com) and sign in
+   - Click **Domain List** in the left sidebar
+   - Find your domain and click **Manage**
+
+2. **Access DNS Settings**
+   - Click on the **Advanced DNS** tab
+   - You'll see a list of DNS records
+
+3. **Add A Records for Apex Domain**
+   
+   Click **Add New Record** and create these four A records:
+   
+   | Type | Host | Value | TTL |
+   |------|------|-------|-----|
+   | A Record | @ | `185.199.108.153` | Automatic |
+   | A Record | @ | `185.199.109.153` | Automatic |
+   | A Record | @ | `185.199.110.153` | Automatic |
+   | A Record | @ | `185.199.111.153` | Automatic |
+   
+   **Note:** The `@` symbol represents your root domain (e.g., `yourname.com`)
+
+4. **Add CNAME Record for WWW Subdomain**
+   
+   Click **Add New Record** and create:
+   
+   | Type | Host | Value | TTL |
+   |------|------|-------|-----|
+   | CNAME Record | www | `<username>.github.io.` | Automatic |
+   
+   **Important:** Replace `<username>` with your GitHub username. Add a trailing dot (`.`) at the end.
+   
+   Example: If your username is `octocat`, use `octocat.github.io.`
+
+5. **Remove Conflicting Records**
+   - Delete any existing A records pointing to parking pages (often `198.54.xxx.xxx`)
+   - Delete any existing CNAME records for `@` or `www` that conflict
+   - Common conflicting record: CNAME @ pointing to `parkingpage.namecheap.com`
+
+6. **Save Changes**
+   - Click the green checkmark or **Save All Changes** button
+   - Changes can take 5-30 minutes to propagate
+
+**Namecheap-Specific Tips:**
+- ⚠️ Namecheap's parking page can interfere. Make sure to remove the default parking page CNAME.
+- ✅ Keep "URL Redirect Record" disabled unless you're explicitly redirecting
+- ✅ TTL set to "Automatic" is fine (usually 30 minutes)
+
+#### Option B: Google Domains
+
+1. **Access DNS Settings**
+   - Go to [domains.google.com](https://domains.google.com)
+   - Select your domain → Click **DNS** in the left menu
+
+2. **Add Custom Records**
+   
+   Scroll to **Custom resource records** and add:
+   
+   **For apex domain:**
+   ```
+   Name: @
+   Type: A
+   TTL: 1H
+   Data: 185.199.108.153
+         185.199.109.153
+         185.199.110.153
+         185.199.111.153
+   ```
+   
+   **For www subdomain:**
+   ```
+   Name: www
+   Type: CNAME
+   TTL: 1H
+   Data: <username>.github.io.
+   ```
+
+#### Option C: Cloudflare
+
+1. **Access DNS Settings**
+   - Log in to Cloudflare
+   - Select your domain
+   - Go to **DNS** tab
+
+2. **Add Records**
+   
+   Click **Add record** for each:
+   
+   **A Records:**
+   - Type: `A`, Name: `@`, IPv4: `185.199.108.153`, Proxy: Off (DNS only)
+   - Repeat for: `.109.153`, `.110.153`, `.111.153`
+   
+   **CNAME Record:**
+   - Type: `CNAME`, Name: `www`, Target: `<username>.github.io`, Proxy: Off
+
+   **Important:** Set Proxy status to "DNS only" (grey cloud), not "Proxied" (orange cloud)
+
+#### General DNS Record Summary
+
+No matter which registrar you use, you need these records:
 
 **For apex domain (`yourname.com`):**
 ```
