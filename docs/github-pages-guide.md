@@ -1,21 +1,21 @@
-<<<<<<< Updated upstream
-# GitHub Pages Deployment Guide
+# Complete GitHub Pages Deployment Guide
 
-A practical, step-by-step guide to publishing your website using GitHub Pages — from creating your first repo to deploying live on the web.
-
----
+This guide walks through the full process of deploying a static website, configuring a custom domain, and setting up automated Continuous Deployment (CD).
 
 ## Table of Contents
-1. [What is GitHub Pages?](#what-is-github-pages)
-2. [Types of GitHub Pages: User/Organization vs Project Pages](#types-of-github-pages-userorganization-vs-project-pages)
-3. [Quick Start: Zero to Published Site](#quick-start-zero-to-published-site)
-4. [Repository Setup and Structure](#repository-setup-and-structure)
-5. [Enabling GitHub Pages](#enabling-github-pages)
-6. [Automatic Builds from Main Branch](#automatic-builds-from-main-branch)
-7. [Custom Domain Configuration](#custom-domain-configuration)
-8. [Using Frameworks (Next.js, Astro, etc.)](#using-frameworks-nextjs-astro-etc)
-9. [Version Control & Team Collaboration](#version-control--team-collaboration)
-10. [Troubleshooting Common Issues](#troubleshooting-common-issues)
+
+- [Quick Start](#quick-start-checklist)
+- [Understanding Internal vs. External Pages](#understanding-internal-vs-external-pages)
+- [Initial Setup and Deployment](#1-initial-setup-and-deployment-from-repository-to-live-site)
+- [Connecting a Custom Domain](#2-connecting-a-custom-domain-using-warbotapp-or-any-domain)
+- [Configuring Your Domain with Namecheap](#configuring-your-domain-with-namecheap)
+- [Automation and CI/CD](#3-automation-and-continuous-deployment-cicd)
+- [Backup and Recovery](#backup-and-recovery)
+- [Best Practices and Tips](#4-best-practices-and-tips)
+- [Advanced Configuration](#5-advanced-configuration)
+- [Troubleshooting](#troubleshooting-faq)
+- [Glossary](#glossary)
+- [Resources](#additional-resources)
 
 ---
 
@@ -36,105 +36,112 @@ GitHub Pages is a free static site hosting service that takes HTML, CSS, and Jav
 
 ---
 
-## Types of GitHub Pages: User/Organization vs Project Pages
+## Understanding Internal vs. External Pages
 
-GitHub Pages comes in two flavors, each with different URL structures and use cases.
+GitHub Pages offers two types of websites, and understanding the difference is crucial for choosing the right setup for your needs.
 
-### User/Organization Pages (Internal)
+### 🏠 User/Organization Pages (External Pages)
 
-These are your **primary** GitHub Pages sites, tied directly to your username or organization.
+**Think of this as your "main website"** - it's hosted at the root of your GitHub Pages domain.
 
-**Characteristics:**
-- **Repository name must be:** `<username>.github.io` or `<orgname>.github.io`
-- **Published at:** `https://<username>.github.io` (no repo name in URL)
-- **One per account/organization**
-- **Deployed from:** `main` branch (root or `/docs` folder)
-- **Best for:** Personal portfolios, company homepages, main organization sites
+**What it is:**
+- Your primary website that lives at `https://username.github.io`
+- **One per GitHub account** (like having one main address)
+- Perfect for personal portfolios, company homepages, or your main web presence
+
+**How to create it:**
+1. Create a repository named exactly `username.github.io` (replace "username" with your GitHub username)
+2. Add your website files to this repository
+3. Enable GitHub Pages
+4. Your site will be live at `https://username.github.io`
 
 **Example:**
 ```
-Repository: octocat.github.io
-Published at: https://octocat.github.io
+Repository name: johndoe.github.io
+Live website: https://johndoe.github.io
 ```
 
 **When to use:**
 - ✅ Your main personal website
-- ✅ Company/organization homepage
-- ✅ When you want a clean URL without a repo name
-- ✅ Central landing page for all your projects
+- ✅ Company homepage
+- ✅ When you want a clean, professional URL
+- ✅ Your primary web presence
 
-### Project Pages (External)
+### 📁 Project Pages (Internal Pages)
 
-These are **individual project sites**, perfect for documentation or demos of specific repositories.
+**Think of this as "project-specific websites"** - they live in subdirectories of your main domain.
 
-**Characteristics:**
-- **Repository name:** Any name (e.g., `my-project`, `docs`, `portfolio-v2`)
-- **Published at:** `https://<username>.github.io/<repository-name>/`
-- **Unlimited per account**
-- **Deployed from:** `main` branch, `gh-pages` branch, or `/docs` folder
-- **Best for:** Project documentation, demos, multiple sites per account
+**What it is:**
+- Individual websites for specific projects
+- Hosted at `https://username.github.io/project-name/`
+- **Unlimited per account** (you can have many project sites)
+- Perfect for project documentation, demos, or multiple websites
+
+**How to create it:**
+1. Create a repository with any name (e.g., `my-portfolio`, `project-docs`)
+2. Add your website files to this repository
+3. Enable GitHub Pages
+4. Your site will be live at `https://username.github.io/project-name/`
 
 **Example:**
 ```
-Repository: octocat/hello-world
-Published at: https://octocat.github.io/hello-world/
+Repository name: my-portfolio
+Live website: https://johndoe.github.io/my-portfolio/
 ```
 
 **When to use:**
-- ✅ Project documentation (README isn't enough)
-- ✅ Demo sites for specific projects
+- ✅ Project documentation
+- ✅ Demo websites for specific projects
 - ✅ Multiple websites under one account
-- ✅ Team project showcases
+- ✅ Testing new designs or ideas
 
-### Key Differences at a Glance
+### 📊 Quick Comparison
 
-| Feature | User/Org Pages | Project Pages |
-|---------|----------------|---------------|
-| **URL** | `username.github.io` | `username.github.io/repo-name` |
-| **Repo Name** | Must be `username.github.io` | Any name |
-| **Quantity** | One per account | Unlimited |
-| **Base Path** | `/` (root) | `/repo-name/` |
-| **Typical Use** | Main website | Project docs/demos |
+| Feature | User/Organization Pages | Project Pages |
+|---------|------------------------|---------------|
+| **URL** | `username.github.io` | `username.github.io/project-name/` |
+| **Repository Name** | Must be `username.github.io` | Any name you choose |
+| **How Many?** | One per account | Unlimited |
+| **Best For** | Main website | Project sites |
+| **URL Cleanliness** | Very clean | Includes project name |
 
-### Important: Base Path Implications
+### 🎯 Which One Should You Choose?
 
-**Project Pages** require careful handling of paths because they live in a subdirectory:
+**Choose User/Organization Pages if:**
+- This is your main website
+- You want the cleanest possible URL
+- You're building a personal portfolio or company site
+- You want `username.github.io` as your web address
+
+**Choose Project Pages if:**
+- You're documenting a specific project
+- You want multiple websites
+- You're experimenting with different designs
+- You don't mind having `/project-name/` in your URL
+
+### 💡 Pro Tip: You Can Have Both!
+
+Many developers use both types:
+- **User Page** (`username.github.io`) - Their main portfolio/homepage
+- **Project Pages** (`username.github.io/project1/`, `username.github.io/project2/`) - Individual project sites
+
+This gives you the best of both worlds!
+
+### 🔧 Important: Path Differences
+
+**Project Pages** live in a subdirectory, so you need to be careful with file paths:
 
 ```html
-<!-- ❌ Won't work on Project Pages (looking for username.github.io/style.css) -->
+<!-- ❌ Won't work on Project Pages -->
 <link rel="stylesheet" href="/style.css">
 <img src="/images/logo.png" alt="Logo">
 
-<!-- ✅ Works everywhere (relative paths) -->
+<!-- ✅ Works everywhere -->
 <link rel="stylesheet" href="style.css">
 <img src="images/logo.png" alt="Logo">
-
-<!-- ✅ Also works (relative from root) -->
-<link rel="stylesheet" href="./style.css">
-<img src="./images/logo.png" alt="Logo">
 ```
 
-**For frameworks** (Next.js, Astro, etc.), you'll need to configure a `basePath`:
-```javascript
-// next.config.js (only for Project Pages)
-module.exports = {
-  basePath: '/your-repo-name',
-}
-```
-
-### Which One Should You Choose?
-
-**Start with a Project Page if:**
-- You're building documentation for a specific project
-- You want to experiment without affecting your main site
-- You need multiple websites under one account
-
-**Use a User/Organization Page if:**
-- This is your primary web presence
-- You want the cleanest possible URL
-- You're building a company/organization homepage
-
-**Pro Tip:** You can have BOTH! Use `username.github.io` for your main site and create Project Pages for individual projects. They all work together seamlessly.
+**The key:** Always use relative paths (without the leading `/`) for images, CSS, and links.
 
 ---
 
@@ -742,6 +749,199 @@ Track your website visitors with Google Analytics:
 
 ---
 
+## Configuring Your Domain with Namecheap
+
+This section provides detailed, step-by-step instructions for configuring your custom domain with Namecheap to point to your GitHub Pages site.
+
+### Prerequisites
+
+- A domain registered with Namecheap
+- Access to your Namecheap account
+- Your GitHub Pages site already deployed
+- Your GitHub username (for the CNAME record)
+
+### Step 1: Access Your Namecheap Account
+
+1. **Log in to Namecheap**
+   - Go to [namecheap.com](https://www.namecheap.com)
+   - Click **Sign In** in the top right corner
+   - Enter your username/email and password
+
+2. **Navigate to Domain List**
+   - Once logged in, click **Domain List** in the left sidebar
+   - Find your domain in the list
+   - Click **Manage** next to your domain
+
+### Step 2: Access DNS Settings
+
+1. **Go to Advanced DNS**
+   - In your domain management page, click the **Advanced DNS** tab
+   - You'll see a list of existing DNS records
+
+2. **Clear Existing Records (if needed)**
+   - Delete any existing A records pointing to parking pages
+   - Delete any conflicting CNAME records
+   - Common records to remove:
+     - A records pointing to `198.54.xxx.xxx` (parking page)
+     - CNAME records for `@` pointing to `parkingpage.namecheap.com`
+
+### Step 3: Add A Records for Apex Domain
+
+**For your root domain (e.g., `example.com`):**
+
+1. **Click "Add New Record"**
+2. **Create four A records** with these exact values:
+
+| Type | Host | Value | TTL |
+|------|------|-------|-----|
+| A Record | @ | `185.199.108.153` | Automatic |
+| A Record | @ | `185.199.109.153` | Automatic |
+| A Record | @ | `185.199.110.153` | Automatic |
+| A Record | @ | `185.199.111.153` | Automatic |
+
+**Visual Guide - Adding A Records in Namecheap:**
+```
+┌─────────────────────────────────────────────────────────┐
+│  Advanced DNS - example.com                              │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │ Type: [A Record ▼]                              │   │
+│  │ Host: [@        ]                               │   │
+│  │ Value: [185.199.108.153]                        │   │
+│  │ TTL: [Automatic ▼]                              │   │
+│  │                    [ Add Record ]               │   │
+│  └─────────────────────────────────────────────────┘   │
+│                                                         │
+│  Repeat for: 185.199.109.153, 185.199.110.153,         │
+│              185.199.111.153                            │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Step 4: Add CNAME Record for WWW Subdomain
+
+**For your www subdomain (e.g., `www.example.com`):**
+
+1. **Click "Add New Record"**
+2. **Create one CNAME record:**
+
+| Type | Host | Value | TTL |
+|------|------|-------|-----|
+| CNAME Record | www | `YOUR_USERNAME.github.io.` | Automatic |
+
+**Important Notes:**
+- Replace `YOUR_USERNAME` with your actual GitHub username
+- **Include the trailing dot (.)** at the end of the value
+- Example: If your username is `johndoe`, use `johndoe.github.io.`
+
+**Visual Guide - Adding CNAME Record in Namecheap:**
+```
+┌─────────────────────────────────────────────────────────┐
+│  Advanced DNS - example.com                              │
+│                                                         │
+│  ┌─────────────────────────────────────────────────┐   │
+│  │ Type: [CNAME Record ▼]                         │   │
+│  │ Host: [www      ]                              │   │
+│  │ Value: [johndoe.github.io.    ]                │   │
+│  │ TTL: [Automatic ▼]                            │   │
+│  │                    [ Add Record ]             │   │
+│  └─────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Step 5: Save Your Changes
+
+1. **Review all records** - You should now have:
+   - 4 A records for `@` pointing to GitHub's IP addresses
+   - 1 CNAME record for `www` pointing to your GitHub Pages
+
+2. **Click "Save All Changes"**
+   - Look for a green checkmark or "Save All Changes" button
+   - Changes typically take 5-30 minutes to propagate
+
+### Step 6: Configure Domain in GitHub
+
+1. **Go to your GitHub repository**
+2. **Navigate to Settings → Pages**
+3. **Under "Custom domain"**, enter your domain:
+   - For apex domain: `example.com`
+   - For www subdomain: `www.example.com`
+4. **Click Save**
+5. **Wait for verification** (can take up to 24 hours)
+
+### Step 7: Enable HTTPS
+
+1. **After DNS propagation** (check with [DNS Checker](https://dnschecker.org))
+2. **Return to Settings → Pages**
+3. **Check "Enforce HTTPS"** checkbox
+4. **Wait for SSL certificate** (automatic via Let's Encrypt)
+
+### Troubleshooting Namecheap-Specific Issues
+
+**Common Problems and Solutions:**
+
+#### Problem: Site shows parking page
+**Solution:**
+- Remove the default parking page CNAME record
+- Ensure no A records point to `198.54.xxx.xxx`
+
+#### Problem: www subdomain not working
+**Solution:**
+- Verify CNAME record has trailing dot: `username.github.io.`
+- Check TTL is set to "Automatic" or a low value (300-3600)
+
+#### Problem: Domain not verifying in GitHub
+**Solution:**
+- Wait 24-48 hours for full DNS propagation
+- Use [DNS Checker](https://dnschecker.org) to verify records globally
+- Ensure no conflicting records exist
+
+#### Problem: HTTPS not enabling
+**Solution:**
+- Wait for DNS to fully propagate
+- Uncheck and recheck "Enforce HTTPS" after 24 hours
+- Clear browser cache
+
+### Verification Steps
+
+**Test your configuration:**
+
+1. **Check DNS propagation:**
+   ```bash
+   # Windows PowerShell
+   nslookup example.com
+   nslookup www.example.com
+   ```
+
+2. **Verify with online tools:**
+   - [DNS Checker](https://dnschecker.org) - Check global propagation
+   - [WhatsMyDNS](https://www.whatsmydns.net/) - Alternative DNS checker
+
+3. **Test your site:**
+   - Visit `http://example.com` (should redirect to HTTPS)
+   - Visit `https://example.com` (should show your site)
+   - Visit `https://www.example.com` (should also work)
+
+### Final DNS Record Summary
+
+Your Namecheap DNS should look like this:
+
+```
+Type       Host    Value                    TTL
+A          @       185.199.108.153          Automatic
+A          @       185.199.109.153          Automatic
+A          @       185.199.110.153          Automatic
+A          @       185.199.111.153          Automatic
+CNAME      www     YOUR_USERNAME.github.io. Automatic
+```
+
+**Pro Tips:**
+- ⚠️ **Always include the trailing dot** in CNAME values
+- ✅ **Use "Automatic" TTL** for faster propagation
+- ✅ **Test both apex and www** versions of your domain
+- ✅ **Wait patiently** - DNS changes can take up to 48 hours
+
+---
+
 ## 3. Automation and Continuous Deployment (CI/CD)
 
 ### Why CI/CD?
@@ -871,13 +1071,10 @@ permissions:
   pages: write
   id-token: write
 
-<<<<<<< Updated upstream
-=======
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
->>>>>>> Stashed changes
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -889,11 +1086,7 @@ jobs:
         uses: actions/configure-pages@v4
       
       - name: Upload artifact
-<<<<<<< Updated upstream
-        uses: actions/upload-pages-artifact@v3
-=======
         uses: actions/upload-pages-artifact@v4
->>>>>>> Stashed changes
         with:
           path: '.'
       
@@ -902,7 +1095,6 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-<<<<<<< Updated upstream
 Then in **Settings → Pages**, set Source to "GitHub Actions".
 
 ---
@@ -1422,6 +1614,367 @@ git push origin main
 │  └────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Backup and Recovery
+
+Protecting your website from data loss is crucial. This section covers multiple backup strategies to ensure your GitHub Pages site is always recoverable.
+
+### Why Backup Your Site?
+
+**Common scenarios where backups save you:**
+- 🗑️ **Accidental deletion** of files or entire repository
+- 🔧 **Broken deployments** that corrupt your site
+- 💻 **Computer crashes** before pushing changes
+- 🔄 **Reverting to previous versions** when new changes break things
+- 📦 **Moving to different hosting** or platforms
+
+### 🏠 Built-in GitHub Backup (Automatic)
+
+**The good news:** GitHub automatically backs up your repository!
+
+**What GitHub provides:**
+- ✅ **Complete repository history** - Every commit is saved
+- ✅ **Branch protection** - Multiple versions of your code
+- ✅ **Automatic replication** - GitHub stores copies in multiple data centers
+- ✅ **Version control** - You can revert to any previous version
+
+**How to access your backups:**
+1. Go to your repository on GitHub
+2. Click **Commits** to see all your changes
+3. Click any commit to see what changed
+4. Use **Releases** to create tagged backups
+
+### 💾 Local Backup Strategies
+
+#### Method 1: Clone Your Repository Locally
+
+**Create a local copy of your entire site:**
+
+```bash
+# Clone your repository to your computer
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
+
+# This gives you a complete local backup
+# You can work offline and push changes later
+```
+
+**Benefits:**
+- ✅ Complete offline access
+- ✅ Work without internet
+- ✅ Local development environment
+- ✅ Easy to restore if GitHub has issues
+
+#### Method 2: Regular Local Backups
+
+**Set up a backup routine:**
+
+```bash
+# Create a backup folder
+mkdir ~/website-backups
+cd ~/website-backups
+
+# Clone your site (or update existing clone)
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+# OR if you already have it:
+cd YOUR_REPO_NAME
+git pull origin main
+
+# Create a timestamped backup
+cp -r YOUR_REPO_NAME YOUR_REPO_NAME-backup-$(date +%Y%m%d)
+```
+
+**Windows PowerShell version:**
+```powershell
+# Create backup folder
+New-Item -ItemType Directory -Path "C:\website-backups" -Force
+cd C:\website-backups
+
+# Clone or update
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+# OR
+cd YOUR_REPO_NAME
+git pull origin main
+
+# Create timestamped backup
+Copy-Item -Path "YOUR_REPO_NAME" -Destination "YOUR_REPO_NAME-backup-$(Get-Date -Format 'yyyyMMdd')" -Recurse
+```
+
+### 🔄 Automated Backup Solutions
+
+#### Method 1: GitHub Actions Backup
+
+**Create an automated backup workflow:**
+
+Create `.github/workflows/backup.yml`:
+
+```yaml
+name: Automated Backup
+
+on:
+  schedule:
+    # Run every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allow manual runs
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Get full history
+      
+      - name: Create backup archive
+        run: |
+          tar -czf backup-$(date +%Y%m%d).tar.gz .
+      
+      - name: Upload backup as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-backup-$(date +%Y%m%d)
+          path: backup-$(date +%Y%m%d).tar.gz
+          retention-days: 30
+```
+
+**Benefits:**
+- ✅ Automatic weekly backups
+- ✅ Stored as GitHub artifacts
+- ✅ 30-day retention
+- ✅ Manual trigger option
+
+#### Method 2: Mirror to Another Repository
+
+**Create a backup repository:**
+
+```yaml
+name: Mirror to Backup Repository
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Push to backup repository
+        run: |
+          git remote add backup https://github.com/YOUR_USERNAME/YOUR_REPO_NAME-backup.git
+          git push backup main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### 📦 Export Your Site Files
+
+#### Method 1: Download Repository as ZIP
+
+**Manual backup method:**
+
+1. Go to your repository on GitHub
+2. Click **Code** → **Download ZIP**
+3. Save the ZIP file to your computer
+4. Extract when needed
+
+**When to use:**
+- ✅ Quick one-time backup
+- ✅ Sharing your site files
+- ✅ Moving to different hosting
+
+#### Method 2: Export Built Site
+
+**For sites with build processes:**
+
+```bash
+# If using a build tool like Jekyll, Next.js, etc.
+npm run build
+# or
+bundle exec jekyll build
+
+# Copy the built files (usually _site/, out/, dist/, or public/)
+cp -r _site ~/website-backups/site-$(date +%Y%m%d)
+```
+
+### 🔄 Recovery Procedures
+
+#### Scenario 1: Repository Deleted
+
+**If your entire repository is deleted:**
+
+1. **Check if it's in your trash:**
+   - Go to GitHub → Settings → Repositories
+   - Look for deleted repositories
+
+2. **Restore from local backup:**
+   ```bash
+   cd ~/website-backups/YOUR_REPO_NAME
+   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+   git push -u origin main
+   ```
+
+3. **Recreate repository:**
+   - Create new repository on GitHub
+   - Push your local files to the new repository
+
+#### Scenario 2: Files Accidentally Deleted
+
+**Recover deleted files:**
+
+```bash
+# See what was deleted
+git log --oneline
+
+# Find the commit before deletion
+git checkout COMMIT_HASH
+
+# Copy the files you need
+cp -r recovered-files/ ../current-version/
+
+# Go back to latest version
+git checkout main
+
+# Add the recovered files
+git add recovered-files/
+git commit -m "Restore accidentally deleted files"
+git push origin main
+```
+
+#### Scenario 3: Broken Deployment
+
+**Revert to previous working version:**
+
+```bash
+# See recent commits
+git log --oneline
+
+# Revert to previous commit
+git revert COMMIT_HASH
+
+# Or reset to previous commit (more drastic)
+git reset --hard COMMIT_HASH
+git push --force origin main
+```
+
+**Using GitHub interface:**
+1. Go to **Commits** in your repository
+2. Find the last working commit
+3. Click **Revert** to undo changes
+4. Or click **Browse files** to see old version
+
+### 🛡️ Best Practices for Backup
+
+#### 1. Follow the 3-2-1 Rule
+
+- **3 copies** of your data
+- **2 different storage types** (local + cloud)
+- **1 offsite backup** (GitHub counts as offsite)
+
+#### 2. Regular Backup Schedule
+
+**Recommended schedule:**
+- ✅ **Daily:** Automatic Git commits (you're already doing this!)
+- ✅ **Weekly:** Download repository ZIP
+- ✅ **Monthly:** Full local backup
+- ✅ **Before major changes:** Manual backup
+
+#### 3. Test Your Backups
+
+**Regularly verify backups work:**
+
+```bash
+# Test restoring from backup
+cd ~/website-backups/YOUR_REPO_NAME-backup-20241201
+python -m http.server 8000
+# Visit http://localhost:8000 to verify it works
+```
+
+#### 4. Document Your Backup Process
+
+**Create a backup checklist:**
+
+```markdown
+# My Website Backup Checklist
+
+## Daily
+- [ ] Commit and push changes to GitHub
+
+## Weekly  
+- [ ] Download repository ZIP
+- [ ] Test local backup works
+
+## Monthly
+- [ ] Create full local backup
+- [ ] Verify GitHub Actions backup ran
+- [ ] Test recovery process
+
+## Before Major Changes
+- [ ] Create manual backup
+- [ ] Document what I'm changing
+- [ ] Test changes locally first
+```
+
+### 🚨 Emergency Recovery Kit
+
+**Keep this information handy:**
+
+```markdown
+# Emergency Recovery Information
+
+## Repository Details
+- Repository URL: https://github.com/USERNAME/REPO_NAME
+- Local backup location: ~/website-backups/REPO_NAME
+- Last backup date: [Update regularly]
+
+## Key Commands
+- Clone repository: git clone https://github.com/USERNAME/REPO_NAME.git
+- Restore from backup: git checkout COMMIT_HASH
+- Revert changes: git revert COMMIT_HASH
+
+## Important Files
+- Main page: index.html
+- Styles: css/style.css
+- Images: images/
+- Configuration: .github/workflows/
+
+## Contact Information
+- GitHub Support: https://support.github.com
+- Domain registrar: [Your registrar's support]
+```
+
+### 💡 Pro Tips
+
+**Additional backup strategies:**
+
+1. **Use GitHub Releases:**
+   - Create releases for major milestones
+   - Download release archives as backups
+   - Tag important versions
+
+2. **Multiple GitHub Accounts:**
+   - Fork your repository to another account
+   - Automatic backup every time you push
+
+3. **Cloud Storage Sync:**
+   - Sync your local backup folder to Google Drive, Dropbox, etc.
+   - Automatic cloud backup of your local files
+
+4. **Domain and DNS Backup:**
+   - Document your DNS settings
+   - Screenshot your domain registrar settings
+   - Keep CNAME file content saved
+
+**Remember:** The best backup is the one you actually use regularly. Start with simple local backups and gradually add more sophisticated solutions as your site grows!
 
 ---
 
